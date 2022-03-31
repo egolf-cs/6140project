@@ -3,6 +3,8 @@ TRAIN = "dat/train.csv"
 TEST = "dat/test.csv"
 VALIDATION = "dat/validation.csv"
 
+# TODO: Compile all data and randomly divide all data into train and test sets.
+
 train_ps = DatPts(TRAIN)
 test_ps = DatPts(TEST)
 val_ps = DatPts(VALIDATION)
@@ -15,9 +17,3 @@ assert(val_ps.validate())
 comb_ps = DatPts(TRAIN)
 comb_ps.concat(DatPts(VALIDATION))
 assert(comb_ps.validate())
-
-
-# print(train_ps)
-# print(test_ps)
-# print(val_ps)
-# print(comb_ps)
