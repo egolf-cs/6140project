@@ -16,6 +16,28 @@ def score_clfr(fname):
     meta["test_preds"]  = preds
     save_clfr(model, meta, fname)
 
+def thm_stats_clfr(fname):
+    model, meta = load_clfr(fname)
+    preds = meta["test_preds"]
+    meta["thms_att"] = len(list(filter(lambda x: x != 5, preds)))
+    # preds = test_ps.ys
+    zs = list(zip(preds,test_ps.rawys))
+    ts = [(z[1][z[0]] if z[0] != 5 else 0) for z in zs]
+    ts = [100 if t == -100 else t for t in ts]
+    def is_proved(z):
+        pred = z[0]
+        if pred == 5:
+            return 0
+        time = z[1][pred]
+        if time == -100:
+            return 0
+        return 1
+    ps = [is_proved(z) for z in zs]
+    meta["thms_prv"] = sum(ps)
+    meta["prv_time"] = sum(ts)
+    save_clfr(model, meta, fname)
+
+
 def rprt_clfr(fname):
     model, meta = load_clfr(fname)
     fmt = [("Model",fname),
@@ -42,6 +64,13 @@ def rprt_all(fnames):
     df = pd.DataFrame(data, index=left_headers)
     print(df.to_string(header=False))
 
-fnames = ["frq_clfr", "rnd_clfr", "lr_clfr", "tu_lr_clfr", "best_lr_clfr", "test_lr_clfr"]
+dummy_fnames = ["frq_clfr", "rnd_clfr"]
+lr_fnames = ["lr_clfr", "reg_lr_clfr", "tu_lr_clfr", "best_lr_clfr", "test_lr_clfr"]
+svc_fnames =["lin_svc_clfr","tu_lin_svc_clfr","poly_svc_clfr","tu_poly_svc_clfr","rbf_svc_clfr","tu_rbf_svc_clfr"]
+
+# thm_stats_clfr("frq_clfr")
+
+fnames = dummy_fnames + svc_fnames
 [score_clfr(fname) for fname in fnames]
+[thm_stats_clfr(fname) for fname in fnames]
 rprt_all(fnames)

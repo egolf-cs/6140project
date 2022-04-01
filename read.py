@@ -9,30 +9,42 @@ class DatPt:
         self.raw = raw
         # This is the indicator list of length 6.
         # A 1 at index i indicates that heuristic i was the best
-        self.rawy = [int(s) for s in self.raw[-6:]]
+        self.rawy = [float(s) for s in self.raw[-5:]]
 
         # x is the feature vector
-        self.x = [float(s) for s in self.raw[:-6]]
+        self.rawx = [float(s) for s in self.raw[:-5]]
+        self.x = self.rawx[:4] + self.rawx[5:34] + self.rawx[35:]
         # y is the label of the feature used 0,1,..,5
-        self.y = self.rawy.index(1)
+        z = list(zip(range(len(self.rawy)),self.rawy))
+        z = list(filter(lambda x: x[1] != -100, z))
+        if z == []:
+            self.y = 5
+        else:
+            tmp = min(z, key=lambda x: x[1])
+            self.y = tmp[0]
 
     def validate(self):
-        b1 = (len(self.rawy) == 6)
-        b2 = (len(self.raw) == 57)
-        b3 = ((len(self.x) + len(self.rawy)) == len(self.raw))
-        b4 = self.rawy[self.y] == 1
-        tmp = list(5*[-1])
-        tmp.insert(self.y, 1)
-        b5 = (tmp == self.rawy)
-        return b1 and b2 and b3 and b4 and b5
+        assert(self.rawx[4] == 0)
+        assert(self.rawx[34] == 0)
+        assert(len(self.rawx) == 53)
+        assert(len(self.x) == 51)
+        assert(len(self.rawy) == 5)
+        if self.y == 5:
+            self.rawy = 5*[-100]
+        else:
+            tmp1 = self.rawy[self.y]
+            tmp2 = list(filter(lambda x: x != -100, self.rawy))
+            assert(tmp1 == min(tmp2))
 
 class DatPts:
 
-    def __init__(self, csv):
-        self.ps = self.read_dat(csv)
-        self.name = csv
-        self.xs = [p.x for p in self.ps]
-        self.ys = [p.y for p in self.ps]
+    def __init__(self, csv=""):
+        if csv != "":
+            self.ps = self.read_dat(csv)
+            self.name = csv
+            self.xs = [p.x for p in self.ps]
+            self.ys = [p.y for p in self.ps]
+            self.rawys = [p.rawy for p in self.ps]
 
     def read_dat(self, file):
         res = []
@@ -45,11 +57,18 @@ class DatPts:
 
     # ps is a list of DatPt's
     def validate(self):
-        v = [p.validate() for p in self.ps]
-        return (False not in v)
+        [p.validate() for p in self.ps]
 
     def __repr__(self):
         return f"<DatPts '{self.name}' len={len(self.ps)}>"
+
+    def normalize(self, is_train, scaler):
+        if is_train:
+            scaler.fit(self.xs)
+            self.xs = scaler.transform(self.xs)
+        else:
+            self.xs = scaler.transform(self.xs)
+        return scaler
 
     def concat(self, dps):
         self.ps = self.ps + dps.ps

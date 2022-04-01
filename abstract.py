@@ -1,11 +1,11 @@
 # https://pyimagesearch.com/2021/05/17/introduction-to-hyperparameter-tuning-with-scikit-learn-and-python/
 import time
-from dat import test_ps,train_ps,val_ps
+# from dat import test_ps,train_ps,val_ps
 # clfr, x_train, y_train, x_test, y_test --> preds, score
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-from sklearn.model_selection import RepeatedKFold
+from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import balanced_accuracy_score as bal_score
 
@@ -13,15 +13,17 @@ from joblib import dump, load
 clfr_dir = "models"
 
 def save_clfr(clfr, meta, fname):
+    print(f"SAVING: {fname}")
     meta["score_fn"] = bal_score
     dump((clfr,meta),f'{clfr_dir}/{fname}.joblib')
+    print(f"SAVED: {fname}")
 
 def load_clfr(fname):
     tmp = load(f'{clfr_dir}/{fname}.joblib')
     return tmp[0], tmp[1]
 
 def tune_clfr(clfr, grid, splits, repeats, xs, ys, verbose=0):
-    cvFold = RepeatedKFold(n_splits=splits, n_repeats=repeats, random_state=1)
+    cvFold = RepeatedStratifiedKFold(n_splits=splits, n_repeats=repeats, random_state=1)
     randomSearch = RandomizedSearchCV(estimator=clfr, param_distributions=grid, n_jobs=-1,
     	cv=cvFold, verbose=verbose, scoring='balanced_accuracy')
     searchResults = randomSearch.fit(xs, ys)
