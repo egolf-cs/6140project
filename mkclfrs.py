@@ -112,8 +112,8 @@ def mk_LR():
     best_lr_params = {'penalty': 'elasticnet', 'l1_ratio': 0.3, 'C': 3.0, 'solver': 'saga', 'tol': 0.0001, 'multi_class': 'multinomial', 'max_iter': 5000}
     best_lr_clfr = LogisticRegression(**best_lr_params)
     best_lr_meta = {"train_xs":train_ps.xs, "train_ys":train_ps.ys, "params":best_lr_params}
-    # best_lr_clfr.fit(train_ps.xs,train_ps.ys)
-    # save_clfr(best_lr_clfr,best_lr_meta,"best_lr_clfr")
+    best_lr_clfr.fit(train_ps.xs,train_ps.ys)
+    save_clfr(best_lr_clfr,best_lr_meta,"best_lr_clfr")
 
 def mk_SVC():
     svc_repeats, svc_folds = REPEATS, FOLDS
@@ -128,7 +128,7 @@ def mk_SVC():
     save_clfr(lin_svc_clfr,lin_svc_meta,"lin_svc_clfr")
     print("STARTING: linear w/ tuning")
     ### linear w/ tuning
-    Cs = [0.5*i for i in range(1,8)]
+    Cs = [1.5,2,2.5,3]
     lin_svc_grid = {"C":Cs}
     u_lin_svc_clfr = SVC(**lin_svc_params)
     tu_lin_svc_clfr, tu_lin_svc_params, lin_svc_val_score = tune_clfr(u_lin_svc_clfr, lin_svc_grid, svc_folds, svc_repeats, train_ps.xs, train_ps.ys, 50)
@@ -194,17 +194,16 @@ def mk_SVC():
                         "grid":rbf_svc_grid,
                         "val_score":rbf_svc_val_score}
     save_clfr(tu_rbf_svc_clfr,tu_rbf_svc_meta,"tu_rbf_svc_clfr")
-    pass
 
 def mk_DNN():
     Ss = [[51,2500,500,50,6],
             [51,2500,500,500,50,6]]
     for S in Ss:
-        best_clfr, best_epoch, best_val_acc = mk_nn(S, train_ps)
+        best_clfr, best_epoch, best_val_acc, weight = mk_nn(S, train_ps)
         dnn_clfr = NNClfr(best_clfr)
         # y = dnn_clfr.predict(train_ps.xs[0])
         # print(y)
-        dnn_params = {"S":S, "best_epoch":best_epoch}
+        dnn_params = {"S":S, "best_epoch":best_epoch, "weight":weight}
         dnn_meta = {"train_xs":train_ps.xs, "train_ys":train_ps.ys, "val_score":best_val_acc, "params":dnn_params}
         save_clfr(dnn_clfr,dnn_meta,str(S))
 

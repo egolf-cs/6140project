@@ -21,9 +21,8 @@ MOD_DIR = "nns"
 
 BATCH_SIZE = 64
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-EPS = 500
+EPS = 300
 LR = 0.01
-loss_fn = nn.CrossEntropyLoss()
 
 class ThmsDataset(Dataset):
     def __init__(self, xs, ys):
@@ -151,7 +150,7 @@ def test(dl, clfr, loss_fn, name):
     print()
     return bal_acc, test_loss, per_class_acc
 
-def train_loop(clfr, train_dl, val_dl):
+def train_loop(clfr, train_dl, val_dl, loss_fn):
     opt = torch.optim.SGD(clfr.parameters(), lr=LR)
     best_model   = copy.deepcopy(clfr)
     best_val_acc = 0
@@ -178,14 +177,14 @@ def train_loop(clfr, train_dl, val_dl):
     val_stats   = (val_losses,   val_accs)
     return best, train_stats, val_stats
 
-def train_and_save(S, train_dl, val_dl, train_id, val_id):
+def train_and_save(S, train_dl, val_dl, train_id, val_id, loss_fn):
     try:
         train_accs, val_accs, train_losses, val_losses = read_stats(S, train_id, val_id)
         best_model, meta = load_nn(S,train_id,val_id)
         best_epoch = meta["best_epoch"]
     except:
         clfr = init_model(S)
-        best, train_stats, val_stats = train_loop(clfr, train_dl, val_dl)
+        best, train_stats, val_stats = train_loop(clfr, train_dl, val_dl, loss_fn)
         best_model, best_val_acc, best_epoch = best[0], best[1], best[2]
         train_losses, train_accs = train_stats[0], train_stats[1]
         val_losses,   val_accs   = val_stats[0],   val_stats[1]
@@ -212,10 +211,16 @@ S = [51,2500,500,50,6]
 def mk_nn(S, ps):
     X = list(range(len(ps.xs)))
     y = [ps.ys[i] for i in X]
-    X_train, X_val, _, _ = train_test_split(X, y, test_size=0.25, random_state=42)
+    X_train, X_val, _, _ = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
 
     train_xs = [ps.xs[i] for i in X_train]
     train_ys = [ps.ys[i] for i in X_train]
+    counts = [0 for _ in range(len(list(set(train_ys))))]
+    for y in train_ys:
+        counts[y] += 1
+    weight = torch.tensor([max(counts)/c for c in counts])
+    loss_fn = nn.CrossEntropyLoss(weight=weight)
+
 
     val_xs = [ps.xs[i] for i in X_val]
     val_ys = [ps.ys[i] for i in X_val]
@@ -225,11 +230,11 @@ def mk_nn(S, ps):
     train_dl = DataLoader(train_data, batch_size=BATCH_SIZE)
     val_dl   = DataLoader(val_data,  batch_size=BATCH_SIZE)
 
-    best_model, best_epoch = train_and_save(S, train_dl, val_dl, 1, 2)
+    best_model, best_epoch = train_and_save(S, train_dl, val_dl, 1, 2, loss_fn)
     # print(S)
     # print(f"Best epoch:{best_epoch}")
     # print(S)
     # test(train_dl, best_model, loss_fn, "TRAIN")
     # print(S)
     best_val_acc, _, _ = test(val_dl, best_model, loss_fn, "VAL")
-    return best_model, best_epoch, best_val_acc
+    return best_model, best_epoch, best_val_acc, weight

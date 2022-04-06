@@ -3,6 +3,7 @@ from abstract import load_clfr, save_clfr, apply_classifier
 from sklearn.metrics import balanced_accuracy_score as bal_score
 from collections import OrderedDict
 from mkclfrs import NNClfr
+from mkclfrs import Oracle
 import pandas as pd
 pd.set_option('display.float_format', lambda x: f"{x:.3f}")
 
@@ -66,7 +67,7 @@ def rprt_all(fnames):
     print(df.to_string(header=False))
 
 dummy_fnames = ["frq_clfr", "rnd_clfr", "const_clfr", "oracle"]
-lr_fnames = ["lr_clfr", "reg_lr_clfr", "tu_lr_clfr", "best_lr_clfr", "test_lr_clfr"]
+lr_fnames = ["lr_clfr", "reg_lr_clfr", "tu_lr_clfr", "best_lr_clfr"]
 svc_fnames =["lin_svc_clfr","tu_lin_svc_clfr","poly_svc_clfr","tu_poly_svc_clfr","rbf_svc_clfr","tu_rbf_svc_clfr"]
 dnn_fnames = ["[51, 2500, 500, 50, 6]", "[51, 2500, 500, 500, 50, 6]"]
 
