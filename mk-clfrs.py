@@ -163,6 +163,6 @@ def mk_SVC():
 def mk_DNN():
     pass
 
-mk_dummies()
-mk_LR()
+# mk_dummies()
+# mk_LR()
 # mk_SVC()
