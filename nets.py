@@ -1,5 +1,19 @@
 from dat import train_ps as ps
 from dat import test_ps
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import balanced_accuracy_score as bal_score
+
+from _pickle import dump, load
+
+import torch
+from torch import nn
+from torch.utils.data import DataLoader, Dataset
+from torch.optim import Adam
+
+from collections import OrderedDict
+import copy
+
+import matplotlib.pyplot as plt
 
 FIG_DIR = "figs"
 STAT_DIR = "stats"
@@ -7,7 +21,7 @@ MOD_DIR = "nns"
 
 BATCH_SIZE = 64
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-EPS = 3
+EPS = 500
 LR = 0.01
 loss_fn = nn.CrossEntropyLoss()
 
@@ -47,6 +61,16 @@ def load_nn(S, train_id, val_id):
     f.close()
     return tmp[0], tmp[1]
 
+def argmax(xs, f):
+    curr_max = f(xs[0])
+    arg_max = xs[0]
+    for i, x in enumerate(xs):
+        y = f(x)
+        if y > curr_max:
+            curr_max = y
+            arg_max = x
+    return arg_max
+
 def init_model(S):
     aux = []
 
@@ -82,6 +106,8 @@ def test(dl, clfr, loss_fn, name):
     test_loss, correct = 0, 0
     per_class_correct = {}
     per_class = {}
+    all_preds = []
+    all_ys    = []
     with torch.no_grad():
         for xs, ys in dl:
             xs = xs.to(DEVICE)
@@ -99,6 +125,8 @@ def test(dl, clfr, loss_fn, name):
                     per_class[yi] = 0
                 per_class[yi] += 1
                 pidx = argmax(list(range(len(p))), lambda x: p[x])
+                all_preds += [pidx]
+                all_ys    += [yi]
                 if pidx == y:
                     if yi not in per_class_correct:
                         per_class_correct[yi] = 0
@@ -112,13 +140,16 @@ def test(dl, clfr, loss_fn, name):
         if k not in per_class_correct:
             per_class_correct[k] = 0
         per_class_acc[k] = per_class_correct[k]/per_class[k]
+    accs = [per_class_acc[k] for k in per_class_acc]
+    bal_acc = sum(accs)/len(accs)
+
     print(f"{name} Error")
-    print(f"Acc: {correct}, Avg loss: {test_loss}")
+    print(f"Bal Acc: {bal_acc}, Avg loss: {test_loss}")
     print("Per class accuracy:")
     for k in per_class_acc:
         print(f"{k}:{per_class_acc[k]}")
     print()
-    return correct, test_loss, per_class_acc
+    return bal_acc, test_loss, per_class_acc
 
 def train_loop(clfr, train_dl, val_dl):
     opt = torch.optim.SGD(clfr.parameters(), lr=LR)
@@ -174,31 +205,31 @@ def train_and_save(S, train_dl, val_dl, train_id, val_id):
     ax2.legend(loc="upper right")
     fig.savefig(f"{FIG_DIR}/{str(S)}-{str(train_id)}-{str(val_id)}.png")
 
-S = [51,64,6]
+    return best_model, best_epoch
 
-X = list(range(len(ps.xs)))
-y = [ps.ys[i] for i in X]
-X_train, X_val, _, _ = train_test_split(X, y, test_size=0.25, random_state=42)
+S = [51,2500,500,50,6]
 
-train_xs = [ps.xs[i] for i in X_train]
-train_ys = [ps.ys[i] for i in X_train]
+def mk_nn(S, ps):
+    X = list(range(len(ps.xs)))
+    y = [ps.ys[i] for i in X]
+    X_train, X_val, _, _ = train_test_split(X, y, test_size=0.25, random_state=42)
 
-val_xs = [ps.xs[i] for i in X_val]
-val_ys = [ps.ys[i] for i in X_val]
+    train_xs = [ps.xs[i] for i in X_train]
+    train_ys = [ps.ys[i] for i in X_train]
 
-train_data = ThmsDataset(train_xs, train_ys)
-val_data   = ThmsDataset(val_xs,   val_ys)
-test_data  = ThmsDataset(test_ps.xs, test_ps.ys)
-train_dl = DataLoader(train_data, batch_size=BATCH_SIZE)
-val_dl   = DataLoader(val_data,  batch_size=BATCH_SIZE)
-test_dl   = DataLoader(test_data,  batch_size=BATCH_SIZE)
+    val_xs = [ps.xs[i] for i in X_val]
+    val_ys = [ps.ys[i] for i in X_val]
 
-best_model, best_epoch = train_and_save(S)
-print(S)
-print(f"Best epoch:{best_epoch}")
-print(S)
-test(test_dl, best_model, loss_fn, "TEST")
-print(S)
-test(train_dl, best_model, loss_fn, "TRAIN")
-print(S)
-test(val_dl, best_model, loss_fn, "VAL")
+    train_data = ThmsDataset(train_xs, train_ys)
+    val_data   = ThmsDataset(val_xs,   val_ys)
+    train_dl = DataLoader(train_data, batch_size=BATCH_SIZE)
+    val_dl   = DataLoader(val_data,  batch_size=BATCH_SIZE)
+
+    best_model, best_epoch = train_and_save(S, train_dl, val_dl, 1, 2)
+    # print(S)
+    # print(f"Best epoch:{best_epoch}")
+    # print(S)
+    # test(train_dl, best_model, loss_fn, "TRAIN")
+    # print(S)
+    best_val_acc, _, _ = test(val_dl, best_model, loss_fn, "VAL")
+    return best_model, best_epoch, best_val_acc

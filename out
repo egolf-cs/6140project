@@ -1,7 +1,45 @@
+VAL Error
+Bal Acc: 0.42188271724307874, Avg loss: 1.6820035775502522
+Per class accuracy:
+5:0.7196819085487077
+0:0.5885167464114832
+1:0.21649484536082475
+2:0.3560606060606061
+3:0.32673267326732675
+4:0.3238095238095238
+
+SAVING: [51, 2500, 500, 50, 6]
+SAVED: [51, 2500, 500, 50, 6]
+VAL Error
+Bal Acc: 0.428018101614313, Avg loss: 1.9852232469452753
+Per class accuracy:
+5:0.7276341948310139
+0:0.5933014354066986
+1:0.23711340206185566
+2:0.3484848484848485
+3:0.36633663366336633
+4:0.29523809523809524
+
+SAVING: [51, 2500, 500, 500, 50, 6]
+SAVED: [51, 2500, 500, 500, 50, 6]
 SAVING: frq_clfr
 SAVED: frq_clfr
 SAVING: rnd_clfr
 SAVED: rnd_clfr
+SAVING: const_clfr
+SAVED: const_clfr
+SAVING: oracle
+SAVED: oracle
+SAVING: lr_clfr
+SAVED: lr_clfr
+SAVING: reg_lr_clfr
+SAVED: reg_lr_clfr
+SAVING: tu_lr_clfr
+SAVED: tu_lr_clfr
+SAVING: best_lr_clfr
+SAVED: best_lr_clfr
+SAVING: test_lr_clfr
+SAVED: test_lr_clfr
 SAVING: lin_svc_clfr
 SAVED: lin_svc_clfr
 SAVING: tu_lin_svc_clfr
@@ -14,10 +52,28 @@ SAVING: rbf_svc_clfr
 SAVED: rbf_svc_clfr
 SAVING: tu_rbf_svc_clfr
 SAVED: tu_rbf_svc_clfr
+SAVING: [51, 2500, 500, 50, 6]
+SAVED: [51, 2500, 500, 50, 6]
+SAVING: [51, 2500, 500, 500, 50, 6]
+SAVED: [51, 2500, 500, 500, 50, 6]
 SAVING: frq_clfr
 SAVED: frq_clfr
 SAVING: rnd_clfr
 SAVED: rnd_clfr
+SAVING: const_clfr
+SAVED: const_clfr
+SAVING: oracle
+SAVED: oracle
+SAVING: lr_clfr
+SAVED: lr_clfr
+SAVING: reg_lr_clfr
+SAVED: reg_lr_clfr
+SAVING: tu_lr_clfr
+SAVED: tu_lr_clfr
+SAVING: best_lr_clfr
+SAVED: best_lr_clfr
+SAVING: test_lr_clfr
+SAVED: test_lr_clfr
 SAVING: lin_svc_clfr
 SAVED: lin_svc_clfr
 SAVING: tu_lin_svc_clfr
@@ -30,12 +86,25 @@ SAVING: rbf_svc_clfr
 SAVED: rbf_svc_clfr
 SAVING: tu_rbf_svc_clfr
 SAVED: tu_rbf_svc_clfr
-Model             train score  test score  val score  theorems attempted  theorems proved  total proof time                                                                                   params                                                                                    grid
-frq_clfr                0.167       0.167       None                   0                0                 0                                                                                     None                                                                                    None
-rnd_clfr                0.159       0.181       None                1296              636         68852.540                                                                                     None                                                                                    None
-lin_svc_clfr            0.300       0.292       None                 394              331          6938.190                                             {'tol': 0.001, 'C': 1.0, 'kernel': 'linear'}                                                                                    None
-tu_lin_svc_clfr         0.315       0.300      0.307                 437              359          8427.860                                             {'C': 3.0, 'tol': 0.001, 'kernel': 'linear'}                                              {'C': [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]}
-poly_svc_clfr           0.343       0.292       None                 354              303          6592.600  {'tol': 0.001, 'C': 1.0, 'kernel': 'poly', 'degree': 3, 'gamma': 'scale', 'coef0': 0.0}                                                                                    None
-tu_poly_svc_clfr        0.495       0.400      0.378                 693              573         13918.740    {'degree': 3, 'coef0': 2, 'C': 1.5, 'tol': 0.001, 'kernel': 'poly', 'gamma': 'scale'}  {'C': [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5], 'degree': [2, 3, 4], 'coef0': [0, 1, 2, 3]}
-rbf_svc_clfr            0.389       0.354       None                 551              464         10273.680                              {'tol': 0.001, 'C': 1.0, 'kernel': 'rbf', 'gamma': 'scale'}                                                                                    None
-tu_rbf_svc_clfr         0.458       0.385      0.365                 639              538         12107.430                              {'C': 3.5, 'tol': 0.001, 'kernel': 'rbf', 'gamma': 'scale'}                                              {'C': [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]}
+SAVING: [51, 2500, 500, 50, 6]
+SAVED: [51, 2500, 500, 50, 6]
+SAVING: [51, 2500, 500, 500, 50, 6]
+SAVED: [51, 2500, 500, 500, 50, 6]
+Model                        train score  test score  val score  theorems attempted  theorems proved  total proof time                                                                                                                                                 params                                                                                                                                                                                                grid
+frq_clfr                           0.167       0.167       None                   0                0                 0                                                                                                                                                   None                                                                                                                                                                                                None
+rnd_clfr                           0.167       0.155       None                1265              614         67841.950                                                                                                                                                   None                                                                                                                                                                                                None
+const_clfr                         0.167       0.167       None                1530              805         75846.080                                                                                                                                                   None                                                                                                                                                                                                None
+oracle                             1.000       1.000       None                 942              942          3371.960                                                                                                                                                   None                                                                                                                                                                                                None
+lr_clfr                            0.325       0.307       None                 513              402         11689.810                        {'solver': 'saga', 'penalty': 'none', 'tol': 0.0001, 'C': 1.0, 'multi_class': 'multinomial', 'max_iter': 5000, 'l1_ratio': 0.5}                                                                                                                                                                                                None
+reg_lr_clfr                        0.323       0.308       None                 511              398         11885.100                  {'solver': 'saga', 'penalty': 'elasticnet', 'tol': 0.0001, 'C': 1.0, 'multi_class': 'multinomial', 'max_iter': 5000, 'l1_ratio': 0.5}                                                                                                                                                                                                None
+tu_lr_clfr                         0.324       0.308      0.314                 513              400         11879.240   {'penalty': 'elasticnet', 'l1_ratio': 0.6000000000000001, 'C': 4.5, 'solver': 'saga', 'tol': 0.0001, 'multi_class': 'multinomial', 'max_iter': 5000}  {'C': [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5], 'penalty': ['elasticnet'], 'l1_ratio': [0.0, 0.1, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 1.0]}
+best_lr_clfr                       0.328       0.328       None                 573              441         14122.440  {'penalty': 'elasticnet', 'l1_ratio': 0.30000000000000004, 'C': 3.0, 'solver': 'saga', 'tol': 0.0001, 'multi_class': 'multinomial', 'max_iter': 5000}                                                                                                                                                                                                None
+test_lr_clfr                       0.330       0.328       None                 575              442         14217.950                {'penalty': 'elasticnet', 'l1_ratio': 0.3, 'C': 300.0, 'solver': 'saga', 'tol': 0.0001, 'multi_class': 'multinomial', 'max_iter': 5000}                                                                                                                                                                                                None
+lin_svc_clfr                       0.300       0.292       None                 394              331          6938.190                                                                                                           {'tol': 0.001, 'C': 1.0, 'kernel': 'linear'}                                                                                                                                                                                                None
+tu_lin_svc_clfr                    0.315       0.300      0.307                 437              359          8427.860                                                                                                           {'C': 3.0, 'tol': 0.001, 'kernel': 'linear'}                                                                                                                                                          {'C': [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]}
+poly_svc_clfr                      0.343       0.292       None                 354              303          6592.600                                                                {'tol': 0.001, 'C': 1.0, 'kernel': 'poly', 'degree': 3, 'gamma': 'scale', 'coef0': 0.0}                                                                                                                                                                                                None
+tu_poly_svc_clfr                   0.495       0.400      0.378                 693              573         13918.740                                                                  {'degree': 3, 'coef0': 2, 'C': 1.5, 'tol': 0.001, 'kernel': 'poly', 'gamma': 'scale'}                                                                                                              {'C': [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5], 'degree': [2, 3, 4], 'coef0': [0, 1, 2, 3]}
+rbf_svc_clfr                       0.389       0.354       None                 551              464         10273.680                                                                                            {'tol': 0.001, 'C': 1.0, 'kernel': 'rbf', 'gamma': 'scale'}                                                                                                                                                                                                None
+tu_rbf_svc_clfr                    0.458       0.385      0.365                 639              538         12107.430                                                                                            {'C': 3.5, 'tol': 0.001, 'kernel': 'rbf', 'gamma': 'scale'}                                                                                                                                                          {'C': [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]}
+[51, 2500, 500, 50, 6]             0.619       0.426      0.422                 907              727         20591.700                                                                                                       {'S': [51, 2500, 500, 50, 6], 'best_epoch': 382}                                                                                                                                                                                                None
+[51, 2500, 500, 500, 50, 6]        0.641       0.430      0.428                 918              748         20033.490                                                                                                  {'S': [51, 2500, 500, 500, 50, 6], 'best_epoch': 455}                                                                                                                                                                                                None
