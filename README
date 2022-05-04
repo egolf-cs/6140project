@@ -1,0 +1,7 @@
+There are pre-trained models in the models folder. Running `python3 report-clfrs.py` will produce a report containing the test-train-val accuracy, proof statistics, and hyper-parameters/grid for each pre-trained model. This command should be piped to a file for more readibility. The file `out` already contains the result of running this command on the pre-trained models.
+
+If you wish to retrain the models, you can do so by running `python3 mkclfrs.py`. This will take some time to complete. These models will overwrite the pretrained models in the models folder. Checkout the repo to reobtain the pre-trained models.
+
+The neural net architecture and test train loops are coded in nets.py, which is imported by mkclfrs.py. In the figs folder are the graphs of accuracy and loss wrt epoch.
+
+The data is processed in the dat.py module, which is imported by mkclfrs.py.

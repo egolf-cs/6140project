@@ -68,7 +68,7 @@ def rprt_all(fnames):
 
 dummy_fnames = ["frq_clfr", "rnd_clfr", "const_clfr", "oracle"]
 lr_fnames = ["lr_clfr", "reg_lr_clfr", "tu_lr_clfr", "best_lr_clfr"]
-svc_fnames =["lin_svc_clfr","tu_lin_svc_clfr","poly_svc_clfr","tu_poly_svc_clfr","rbf_svc_clfr","tu_rbf_svc_clfr"]
+svc_fnames =["lin_svc_clfr","tu_lin_svc_clfr","poly_svc_clfr","tu_poly_svc_clfr2","tu_poly_svc_clfr3","tu_poly_svc_clfr4","rbf_svc_clfr","tu_rbf_svc_clfr"]
 dnn_fnames = ["[51, 2500, 500, 50, 6]", "[51, 2500, 500, 500, 50, 6]"]
 
 # thm_stats_clfr("frq_clfr")

@@ -12,8 +12,8 @@ import numpy as np
 
 import torch
 
-REPEATS = 1
-FOLDS   = 2
+REPEATS = 2
+FOLDS   = 5
 
 class NNClfr:
 
@@ -117,28 +117,28 @@ def mk_LR():
 
 def mk_SVC():
     svc_repeats, svc_folds = REPEATS, FOLDS
-    print("STARTING: linear w/o tuning")
-    ### linear w/o tuning,
-    lin_svc_params = {"tol":1e-3,
-                        "C":1.0,
-                        "kernel":"linear"}
-    lin_svc_meta = {"train_xs":train_ps.xs, "train_ys":train_ps.ys, "params":lin_svc_params}
-    lin_svc_clfr = SVC(**lin_svc_params)
-    lin_svc_clfr.fit(train_ps.xs,train_ps.ys)
-    save_clfr(lin_svc_clfr,lin_svc_meta,"lin_svc_clfr")
-    print("STARTING: linear w/ tuning")
-    ### linear w/ tuning
-    Cs = [1.5,2,2.5,3]
-    lin_svc_grid = {"C":Cs}
-    u_lin_svc_clfr = SVC(**lin_svc_params)
-    tu_lin_svc_clfr, tu_lin_svc_params, lin_svc_val_score = tune_clfr(u_lin_svc_clfr, lin_svc_grid, svc_folds, svc_repeats, train_ps.xs, train_ps.ys, 50)
-    update_params(lin_svc_params,tu_lin_svc_params)
-    tu_lin_svc_meta = {"train_xs":train_ps.xs,
-                        "train_ys":train_ps.ys,
-                        "params":tu_lin_svc_params,
-                        "grid":lin_svc_grid,
-                        "val_score":lin_svc_val_score}
-    save_clfr(tu_lin_svc_clfr,tu_lin_svc_meta,"tu_lin_svc_clfr")
+    # print("STARTING: linear w/o tuning")
+    # ### linear w/o tuning,
+    # lin_svc_params = {"tol":1e-3,
+    #                     "C":1.0,
+    #                     "kernel":"linear"}
+    # lin_svc_meta = {"train_xs":train_ps.xs, "train_ys":train_ps.ys, "params":lin_svc_params}
+    # lin_svc_clfr = SVC(**lin_svc_params)
+    # lin_svc_clfr.fit(train_ps.xs,train_ps.ys)
+    # save_clfr(lin_svc_clfr,lin_svc_meta,"lin_svc_clfr")
+    # print("STARTING: linear w/ tuning")
+    # ### linear w/ tuning
+    # Cs = [1.5,2,2.5,3]
+    # lin_svc_grid = {"C":Cs}
+    # u_lin_svc_clfr = SVC(**lin_svc_params)
+    # tu_lin_svc_clfr, tu_lin_svc_params, lin_svc_val_score = tune_clfr(u_lin_svc_clfr, lin_svc_grid, svc_folds, svc_repeats, train_ps.xs, train_ps.ys, 50)
+    # update_params(lin_svc_params,tu_lin_svc_params)
+    # tu_lin_svc_meta = {"train_xs":train_ps.xs,
+    #                     "train_ys":train_ps.ys,
+    #                     "params":tu_lin_svc_params,
+    #                     "grid":lin_svc_grid,
+    #                     "val_score":lin_svc_val_score}
+    # save_clfr(tu_lin_svc_clfr,tu_lin_svc_meta,"tu_lin_svc_clfr")
 
     print("STARTING: poly w/o tuning")
     ## poly  w/o tuning
@@ -154,9 +154,10 @@ def mk_SVC():
     save_clfr(poly_svc_clfr,poly_svc_meta,"poly_svc_clfr")
     print("STARTING: poly w/ tuning")
     ### poly w/ tuning
-    Cs = [i*0.5 for i in range(1,8)]
-    degs = [i for i in range(2,5)]
-    coefs = [i for i in range(0,4)]
+    Cs = [i*0.5 for i in range(1,4)]
+    k = 3
+    degs = [i for i in range(k,k+1)]
+    coefs = [i*0.5 for i in range(3,4)]
     print("COEFS", coefs)
     poly_svc_grid = {"C":Cs, "degree":degs, "coef0":coefs}
     u_poly_svc_clfr = SVC(**poly_svc_params)
@@ -169,7 +170,7 @@ def mk_SVC():
                         "params":tu_poly_svc_params,
                         "grid":poly_svc_grid,
                         "val_score":poly_svc_val_score}
-    save_clfr(tu_poly_svc_clfr,tu_poly_svc_meta,"tu_poly_svc_clfr")
+    save_clfr(tu_poly_svc_clfr,tu_poly_svc_meta,f"tu_poly_svc_clfr{k}")
 
     ### rbf    w/, w/o tuning
     print("STARTING: rbf w/o tuning")
@@ -212,4 +213,4 @@ def mk_DNN():
 # mk_dummies()
 # mk_LR()
 # mk_SVC()
-mk_DNN()
+# mk_DNN()
